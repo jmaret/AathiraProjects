@@ -1,4 +1,5 @@
 # Assets
 
-Place `Aathira_J_Maret_Resume.pdf` in this folder when ready to publish the download.
-The site already links to `assets/Aathira_J_Maret_Resume.pdf`.
+- `credit-paw-evaluation.ipynb` — Jupyter notebook for the PNW credit study modal
+- `pnw-altman-z.png` — chart output exported from that notebook
+- Place `Aathira_J_Maret_Resume.pdf` here when ready; the site links to it already

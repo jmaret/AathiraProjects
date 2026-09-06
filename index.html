@@ -119,6 +119,15 @@
               into a visual report.
             </li>
           </ul>
+          <p class="entry-action">
+            <button
+              type="button"
+              class="btn btn-ghost btn-sm"
+              data-modal-open="pnw-credit-modal"
+            >
+              View Jupyter Lab notebook
+            </button>
+          </p>
         </article>
 
         <article class="entry reveal">
@@ -285,6 +294,248 @@
       <p>© <span id="year"></span> Aathira J Maret</p>
       <a href="assets/Aathira_J_Maret_Resume.pdf">Resume PDF</a>
     </footer>
+
+    <dialog
+      id="pnw-credit-modal"
+      class="project-modal"
+      aria-labelledby="pnw-modal-title"
+    >
+      <div class="modal-shell">
+        <header class="modal-header">
+          <div>
+            <p class="section-label">Jupyter Lab · Summer 2026</p>
+            <h2 id="pnw-modal-title">
+              Macro Regional Credit Study — US Pacific Northwest
+            </h2>
+            <p class="modal-subtitle">
+              Executed cells from <code>credit-paw-evaluation.ipynb</code> — interest
+              coverage, net debt, Altman Z-Scores, and the plotted credit risk profile.
+            </p>
+          </div>
+          <button
+            type="button"
+            class="modal-close"
+            data-modal-close
+            aria-label="Close notebook modal"
+          >
+            ×
+          </button>
+        </header>
+
+        <div class="modal-body notebook">
+          <div class="notebook-chrome" aria-hidden="true">
+            <span></span><span></span><span></span>
+            <p>credit-paw-evaluation.ipynb</p>
+          </div>
+
+          <div class="nb-cell nb-markdown">
+            <p class="nb-prompt" aria-hidden="true"></p>
+            <div class="nb-content">
+              <h3>From the working notebook</h3>
+              <p>
+                Live excerpt of <code>credit-paw-evaluation.ipynb</code> — PNW anchors
+                (<code>MSFT</code>, <code>NKE</code>, <code>INTC</code>, <code>BA</code>)
+                with interest coverage, net debt, and Altman Z-Score credit profiles.
+              </p>
+            </div>
+          </div>
+
+          <div class="nb-cell">
+            <p class="nb-prompt">In&nbsp;[1]:</p>
+            <div class="nb-content">
+              <pre class="nb-code" tabindex="0"><code>%pip install yfinance pandas openpyxl matplotlib</code></pre>
+              <div class="nb-output nb-stream" aria-label="Cell output">
+                <pre>Requirement already satisfied: yfinance in /opt/anaconda3/lib/python3.13/site-packages (1.7.0)
+Requirement already satisfied: pandas in /opt/anaconda3/lib/python3.13/site-packages (2.3.3)
+Requirement already satisfied: openpyxl in /opt/anaconda3/lib/python3.13/site-packages (3.1.5)
+Requirement already satisfied: matplotlib in /opt/anaconda3/lib/python3.13/site-packages (3.10.6)
+Note: you may need to restart the kernel to use updated packages.</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="nb-cell">
+            <p class="nb-prompt">In&nbsp;[2]:</p>
+            <div class="nb-content">
+              <pre class="nb-code" tabindex="0"><code><span class="kw">import</span> yfinance <span class="kw">as</span> yf
+<span class="kw">import</span> pandas <span class="kw">as</span> pd</code></pre>
+            </div>
+          </div>
+
+          <div class="nb-cell">
+            <p class="nb-prompt">In&nbsp;[3]:</p>
+            <div class="nb-content">
+              <pre class="nb-code" tabindex="0"><code>pnw_portfolio = {
+    <span class="st">&quot;MSFT&quot;</span>: <span class="st">&quot;Microsoft Corp. (Redmond, WA)&quot;</span>,
+    <span class="st">&quot;NKE&quot;</span>: <span class="st">&quot;Nike Inc. (Beaverton, OR)&quot;</span>,
+    <span class="st">&quot;INTC&quot;</span>: <span class="st">&quot;Intel Corp. (Hillsboro, OR)&quot;</span>,
+    <span class="st">&quot;BA&quot;</span>: <span class="st">&quot;Boeing Co. (Puget Sound, WA)&quot;</span>
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="nb-cell">
+            <p class="nb-prompt">In&nbsp;[4]:</p>
+            <div class="nb-content">
+              <pre class="nb-code" tabindex="0"><code><span class="fn">print</span>(<span class="st">&quot;Environment setup successful! Tickers loaded:&quot;</span>)
+<span class="kw">for</span> ticker, location <span class="kw">in</span> pnw_portfolio.<span class="fn">items</span>():
+    <span class="fn">print</span>(f<span class="st">&quot;- {ticker}: {location}&quot;</span>)</code></pre>
+              <div class="nb-output nb-stream" aria-label="Cell output">
+                <pre>Environment setup successful! Tickers loaded:
+- MSFT: Microsoft Corp. (Redmond, WA)
+- NKE: Nike Inc. (Beaverton, OR)
+- INTC: Intel Corp. (Hillsboro, OR)
+- BA: Boeing Co. (Puget Sound, WA)</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="nb-cell">
+            <p class="nb-prompt">In&nbsp;[5]:</p>
+            <div class="nb-content">
+              <pre class="nb-code" tabindex="0"><code><span class="kw">def</span> <span class="fn">analyze_pnw_credit</span>(ticker):
+    company = yf.<span class="fn">Ticker</span>(ticker)
+    bs = company.balance_sheet
+    inc = company.financials
+    
+    <span class="kw">def</span> <span class="fn">get_val</span>(df, keys):
+        <span class="kw">for</span> k <span class="kw">in</span> keys:
+            <span class="kw">if</span> k <span class="kw">in</span> df.index:
+                <span class="kw">return</span> df.loc[k].iloc[<span class="num">0</span>]
+        <span class="kw">return</span> <span class="num">0.0</span>
+
+    assets = <span class="fn">get_val</span>(bs, [<span class="st">&#x27;Total Assets&#x27;</span>])
+    liab = <span class="fn">get_val</span>(bs, [<span class="st">&#x27;Total Liabilities Net Minority Interest&#x27;</span>, <span class="st">&#x27;Total Liabilities&#x27;</span>])
+    eq = <span class="fn">get_val</span>(bs, [<span class="st">&#x27;Stockholders Equity&#x27;</span>, <span class="st">&#x27;Total Equity Gross Minority Interest&#x27;</span>])
+    wc = <span class="fn">get_val</span>(bs, [<span class="st">&#x27;Working Capital&#x27;</span>])
+    re = <span class="fn">get_val</span>(bs, [<span class="st">&#x27;Retained Earnings&#x27;</span>])
+    cash = <span class="fn">get_val</span>(bs, [<span class="st">&#x27;Cash And Cash Equivalents&#x27;</span>, <span class="st">&#x27;Cash Cash Equivalents And Short Term Investments&#x27;</span>])
+    debt = <span class="fn">get_val</span>(bs, [<span class="st">&#x27;Total Debt&#x27;</span>])
+    
+    ebit = <span class="fn">get_val</span>(inc, [<span class="st">&#x27;EBIT&#x27;</span>, <span class="st">&#x27;Operating Income&#x27;</span>])
+    interest = <span class="fn">abs</span>(<span class="fn">get_val</span>(inc, [<span class="st">&#x27;Interest Expense&#x27;</span>, <span class="st">&#x27;Interest Expense Non Operating&#x27;</span>]))
+    rev = <span class="fn">get_val</span>(inc, [<span class="st">&#x27;Total Revenue&#x27;</span>])
+
+    coverage = <span class="fn">round</span>(ebit / interest, <span class="num">2</span>) <span class="kw">if</span> interest != <span class="num">0</span> <span class="kw">else</span> <span class="num">999.0</span>
+    net_debt_m = <span class="fn">round</span>((debt - cash) / 1e6, <span class="num">2</span>)
+    
+    a = assets <span class="kw">if</span> assets != <span class="num">0</span> <span class="kw">else</span> <span class="num">1.0</span>
+    x1, x2, x3, x4, x5 = wc/a, re/a, ebit/a, eq/(liab <span class="kw">if</span> liab != <span class="num">0</span> <span class="kw">else</span> <span class="num">1.0</span>), rev/a
+    z = <span class="fn">round</span>((<span class="num">1.2</span> * x1) + (<span class="num">1.4</span> * x2) + (<span class="num">3.3</span> * x3) + (<span class="num">0.6</span> * x4) + (<span class="num">0.999</span> * x5), <span class="num">2</span>)
+    
+    status = <span class="st">&quot;Safe / Low Risk&quot;</span> <span class="kw">if</span> z &gt; <span class="num">2.99</span> <span class="kw">else</span> (<span class="st">&quot;Grey Zone&quot;</span> <span class="kw">if</span> z &gt; <span class="num">1.81</span> <span class="kw">else</span> <span class="st">&quot;Distress / High Risk&quot;</span>)
+
+    <span class="kw">return</span> {
+        <span class="st">&quot;Ticker&quot;</span>: ticker,
+        <span class="st">&quot;Interest Coverage&quot;</span>: coverage,
+        <span class="st">&quot;Net Debt ($M)&quot;</span>: net_debt_m,
+        <span class="st">&quot;Altman Z-Score&quot;</span>: z,
+        <span class="st">&quot;Credit Profile&quot;</span>: status
+    }
+
+<span class="cmt"># Run loop across PNW Portfolio</span>
+results = [<span class="fn">analyze_pnw_credit</span>(t) <span class="kw">for</span> t <span class="kw">in</span> pnw_portfolio.<span class="fn">keys</span>()]
+df_output = pd.<span class="fn">DataFrame</span>(results)</code></pre>
+            </div>
+          </div>
+
+          <div class="nb-cell">
+            <p class="nb-prompt">In&nbsp;[6]:</p>
+            <div class="nb-content">
+              <pre class="nb-code" tabindex="0"><code><span class="fn">display</span>(df_output)</code></pre>
+              <div class="nb-output" aria-label="Cell output">
+                <div class="nb-table-wrap">
+                  <table class="nb-table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Ticker</th>
+                        <th>Interest Coverage</th>
+                        <th>Net Debt ($M)</th>
+                        <th>Altman Z-Score</th>
+                        <th>Credit Profile</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th>0</th>
+                        <td>MSFT</td>
+                        <td>55.39</td>
+                        <td>35891.0</td>
+                        <td>2.68</td>
+                        <td><span class="badge badge-grey">Grey Zone</span></td>
+                      </tr>
+                      <tr>
+                        <th>1</th>
+                        <td>NKE</td>
+                        <td>999.00</td>
+                        <td>3470.0</td>
+                        <td>2.28</td>
+                        <td><span class="badge badge-grey">Grey Zone</span></td>
+                      </tr>
+                      <tr>
+                        <th>2</th>
+                        <td>INTC</td>
+                        <td>2.43</td>
+                        <td>32320.0</td>
+                        <td>1.60</td>
+                        <td><span class="badge badge-distress">Distress / High Risk</span></td>
+                      </tr>
+                      <tr>
+                        <th>3</th>
+                        <td>BA</td>
+                        <td>1.95</td>
+                        <td>43512.0</td>
+                        <td>0.95</td>
+                        <td><span class="badge badge-distress">Distress / High Risk</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nb-cell">
+            <p class="nb-prompt">In&nbsp;[7]:</p>
+            <div class="nb-content">
+              <pre class="nb-code" tabindex="0"><code><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+<span class="cmt"># Plot Altman Z-Scores</span>
+plt.<span class="fn">figure</span>(figsize=(<span class="num">8</span>, <span class="num">4</span>))
+plt.<span class="fn">bar</span>(df_output[<span class="st">&#x27;Ticker&#x27;</span>], df_output[<span class="st">&#x27;Altman Z-Score&#x27;</span>], color=[<span class="st">&#x27;green&#x27;</span>, <span class="st">&#x27;blue&#x27;</span>, <span class="st">&#x27;orange&#x27;</span>, <span class="st">&#x27;red&#x27;</span>])
+plt.<span class="fn">axhline</span>(y=<span class="num">2.99</span>, color=<span class="st">&#x27;green&#x27;</span>, linestyle=<span class="st">&#x27;--&#x27;</span>, label=<span class="st">&#x27;Safe Threshold (2.99)&#x27;</span>)
+plt.<span class="fn">axhline</span>(y=<span class="num">1.81</span>, color=<span class="st">&#x27;red&#x27;</span>, linestyle=<span class="st">&#x27;--&#x27;</span>, label=<span class="st">&#x27;Distress Threshold (1.81)&#x27;</span>)
+plt.<span class="fn">title</span>(<span class="st">&#x27;Pacific Northwest Corporate Credit Risk Profile (Altman Z-Score)&#x27;</span>)
+plt.<span class="fn">ylabel</span>(<span class="st">&#x27;Z-Score&#x27;</span>)
+plt.<span class="fn">legend</span>()
+plt.<span class="fn">show</span>()</code></pre>
+              <div class="nb-output nb-output-chart" aria-label="Chart output">
+                <figure class="nb-chart">
+                  <img
+                    src="assets/pnw-altman-z.png"
+                    alt="Bar chart of Altman Z-Scores for MSFT, NKE, INTC, and BA from the notebook"
+                    width="800"
+                    height="400"
+                  />
+                  <figcaption>
+                    Notebook figure: Pacific Northwest Corporate Credit Risk Profile
+                    (Altman Z-Score).
+                  </figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+
+          <p class="nb-footnote">
+            Source notebook:
+            <a href="assets/credit-paw-evaluation.ipynb">credit-paw-evaluation.ipynb</a>
+            — code and outputs shown as executed in Jupyter Lab.
+          </p>
+
+        </div>
+      </div>
+    </dialog>
 
     <script src="script.js"></script>
   </body>
